@@ -22,7 +22,6 @@ async function createApp() {
             'SELECT cost FROM `base_price` ' +
             'WHERE `type` = ? ',
             [req.query.type]))[0][0]
-
         if (req.query.age as any < 6) {
             res.json({cost: 0})
         } else {

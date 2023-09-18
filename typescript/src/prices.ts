@@ -7,8 +7,8 @@ interface BasePrice {
 
 const zeroBasePrice = <BasePrice>{cost: 0};
 
-export function doSomething(age: number | undefined, type: string | undefined, date: string | undefined, basePrice: BasePrice, holidays: any[]): BasePrice {
-    if (age as any < 6) {
+export function doSomething(age: number, type: string | undefined, date: string | undefined, basePrice: BasePrice, holidays: any[]): BasePrice {
+    if (age < 6) {
         return (zeroBasePrice)
     } else {
         if (type !== 'night') {
@@ -82,7 +82,7 @@ async function createApp() {
     app.get('/prices', async (req, res) => {
         const type = req.query.type as unknown as string | undefined
         const date = req.query.date as unknown as string | undefined
-        const age = req.query.age as unknown as number | undefined
+        const age = req.query.age as unknown as number
 
         const getBasePrice = async () => (await connection.query(
             'SELECT cost FROM `base_price` ' +

@@ -1,6 +1,12 @@
 import express from "express";
 import mysql from "mysql2/promise"
 
+interface BasePrice {
+    cost: number;
+}
+
+const zeroBasePrice = <BasePrice>{cost: 0};
+
 async function createApp() {
     const app = express()
 
@@ -21,9 +27,9 @@ async function createApp() {
         const result = (await connection.query(
             'SELECT cost FROM `base_price` ' +
             'WHERE `type` = ? ',
-            [req.query.type]))[0][0]
+            [req.query.type]))[0][0] as unknown as BasePrice
         if (req.query.age as any < 6) {
-            res.json({cost: 0})
+            res.json(zeroBasePrice)
         } else {
             if (req.query.type !== 'night') {
                 const holidays = (await connection.query(
@@ -75,7 +81,7 @@ async function createApp() {
                         res.json(result)
                     }
                 } else {
-                    res.json({cost: 0})
+                    res.json(zeroBasePrice)
                 }
             }
         }

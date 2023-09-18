@@ -7,6 +7,61 @@ interface BasePrice {
 
 const zeroBasePrice = <BasePrice>{cost: 0};
 
+function doSomething(age: string | undefined, type: string | undefined, holidays: any[], date: string | undefined, basePrice: BasePrice): BasePrice {
+    if (age as any < 6) {
+        return (zeroBasePrice)
+    } else {
+        if (type !== 'night') {
+            let isHoliday;
+            let reduction = 0
+            for (let holiday of holidays) {
+                if (date) {
+                    let d = new Date(date as string)
+                    if (d.getFullYear() === holiday.getFullYear()
+                        && d.getMonth() === holiday.getMonth()
+                        && d.getDate() === holiday.getDate()) {
+
+                        isHoliday = true
+                    }
+                }
+
+            }
+
+            if (!isHoliday && new Date(date as string).getDay() === 1) {
+                reduction = 35
+            }
+
+            // TODO apply reduction for others
+            if (age as any < 15) {
+                return ({cost: Math.ceil(basePrice.cost * .7)})
+            } else {
+                if (age === undefined) {
+                    let cost = basePrice.cost * (1 - reduction / 100)
+                    return ({cost: Math.ceil(cost)})
+                } else {
+                    if (age as any > 64) {
+                        let cost = basePrice.cost * .75 * (1 - reduction / 100)
+                        return ({cost: Math.ceil(cost)})
+                    } else {
+                        let cost = basePrice.cost * (1 - reduction / 100)
+                        return ({cost: Math.ceil(cost)})
+                    }
+                }
+            }
+        } else {
+            if (age as any >= 6) {
+                if (age as any > 64) {
+                    return ({cost: Math.ceil(basePrice.cost * .4)})
+                } else {
+                    return (basePrice)
+                }
+            } else {
+                return (zeroBasePrice)
+            }
+        }
+    }
+}
+
 async function createApp() {
     const app = express()
 
@@ -39,59 +94,9 @@ async function createApp() {
 
 
         const holidays = await getHolidays()
-        const result = await getBasePrice()
-        if (age as any < 6) {
-            res.json(zeroBasePrice)
-        } else {
-            if (type !== 'night') {
-                let isHoliday;
-                let reduction = 0
-                for (let holiday of holidays) {
-                    if (date) {
-                        let d = new Date(date as string)
-                        if (d.getFullYear() === holiday.getFullYear()
-                            && d.getMonth() === holiday.getMonth()
-                            && d.getDate() === holiday.getDate()) {
-
-                            isHoliday = true
-                        }
-                    }
-
-                }
-
-                if (!isHoliday && new Date(date as string).getDay() === 1) {
-                    reduction = 35
-                }
-
-                // TODO apply reduction for others
-                if (age as any < 15) {
-                    res.json({cost: Math.ceil(result.cost * .7)})
-                } else {
-                    if (age === undefined) {
-                        let cost = result.cost * (1 - reduction / 100)
-                        res.json({cost: Math.ceil(cost)})
-                    } else {
-                        if (age as any > 64) {
-                            let cost = result.cost * .75 * (1 - reduction / 100)
-                            res.json({cost: Math.ceil(cost)})
-                        } else {
-                            let cost = result.cost * (1 - reduction / 100)
-                            res.json({cost: Math.ceil(cost)})
-                        }
-                    }
-                }
-            } else {
-                if (age as any >= 6) {
-                    if (age as any > 64) {
-                        res.json({cost: Math.ceil(result.cost * .4)})
-                    } else {
-                        res.json(result)
-                    }
-                } else {
-                    res.json(zeroBasePrice)
-                }
-            }
-        }
+        const basePrice = await getBasePrice()
+        let calcPrice = doSomething(age, type, holidays, date, basePrice);
+        res.json(calcPrice);
     })
     return {app, connection}
 }

@@ -24,18 +24,22 @@ async function createApp() {
         res.json()
     })
     app.get('/prices', async (req, res) => {
-        const result = (await connection.query(
+        const getBasePrice = async () => (await connection.query(
             'SELECT cost FROM `base_price` ' +
             'WHERE `type` = ? ',
-            [req.query.type]))[0][0] as unknown as BasePrice
+            [req.query.type]))[0][0] as unknown as BasePrice;
+
+        const getHolidays = async () => (await connection.query(
+            'SELECT * FROM `holidays`'
+        ))[0] as mysql.RowDataPacket[];
+
+        const holidays = await getHolidays()
+        const result = await getBasePrice()
+
         if (req.query.age as any < 6) {
             res.json(zeroBasePrice)
         } else {
             if (req.query.type !== 'night') {
-                const holidays = (await connection.query(
-                    'SELECT * FROM `holidays`'
-                ))[0] as mysql.RowDataPacket[];
-
                 let isHoliday;
                 let reduction = 0
                 for (let row of holidays) {

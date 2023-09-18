@@ -7,9 +7,9 @@ interface BasePrice {
 
 const zeroBasePrice = <BasePrice>{cost: 0};
 
-export function doSomething(age: number, type: string | undefined, date: string | undefined, basePrice: BasePrice, holidays: any[]): BasePrice {
+export function calcBasePrice(age: number, type: string | undefined, date: string | undefined, basePrice: BasePrice, holidays: any[]): BasePrice {
     if (age < 6) {
-        return (zeroBasePrice)
+        return zeroBasePrice
     } else {
         if (type !== 'night') {
             let isHoliday;
@@ -95,7 +95,7 @@ async function createApp() {
 
         const holidays = await getHolidays()
         const basePrice = await getBasePrice()
-        let calcPrice = doSomething(age, type, date, basePrice, holidays);
+        let calcPrice = calcBasePrice(age, type, date, basePrice, holidays);
         res.json(calcPrice);
     })
     return {app, connection}

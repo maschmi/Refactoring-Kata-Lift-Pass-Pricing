@@ -35,7 +35,7 @@ async function createApp() {
             [type]))[0][0] as unknown as BasePrice
         const getHolidays = async () => ((await connection.query(
             'SELECT * FROM `holidays`'
-        ))[0] as mysql.RowDataPacket[])
+        ))[0] as mysql.RowDataPacket[]).map(r => r.holiday)
 
 
         const holidays = await getHolidays()
@@ -46,8 +46,7 @@ async function createApp() {
             if (type !== 'night') {
                 let isHoliday;
                 let reduction = 0
-                for (let row of holidays) {
-                    let holiday = row.holiday
+                for (let holiday of holidays) {
                     if (date) {
                         let d = new Date(date as string)
                         if (d.getFullYear() === holiday.getFullYear()

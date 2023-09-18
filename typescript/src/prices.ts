@@ -32,14 +32,14 @@ export function doSomething(age: number, type: string | undefined, date: string 
             }
 
             // TODO apply reduction for others
-            if (age as any < 15) {
+            if (age < 15) {
                 return ({cost: Math.ceil(basePrice.cost * .7)})
             } else {
                 if (age === undefined) {
                     let cost = basePrice.cost * (1 - reduction / 100)
                     return ({cost: Math.ceil(cost)})
                 } else {
-                    if (age as any > 64) {
+                    if (age > 64) {
                         let cost = basePrice.cost * .75 * (1 - reduction / 100)
                         return ({cost: Math.ceil(cost)})
                     } else {
@@ -49,8 +49,8 @@ export function doSomething(age: number, type: string | undefined, date: string 
                 }
             }
         } else {
-            if (age as any >= 6) {
-                if (age as any > 64) {
+            if (age >= 6) {
+                if (age > 64) {
                     return ({cost: Math.ceil(basePrice.cost * .4)})
                 } else {
                     return (basePrice)

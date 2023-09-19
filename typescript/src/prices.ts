@@ -7,7 +7,18 @@ interface TicketPrice {
 
 const zeroBasePrice = <TicketPrice>{cost: 0};
 
-export function calcTicketPrice(age: number, type: string | undefined, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
+function getTicket(age: number, ticketTyp: string) : TicketPrice | undefined{
+    if (age < 6) {
+        return zeroBasePrice
+    }
+    return undefined;
+}
+
+export function calcTicketPrice(age: number, type: string, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
+    const ticket = getTicket(age, type);
+    if (ticket !== undefined) {
+        return ticket;
+    }
     if (age < 6) {
         return zeroBasePrice
     } else {
@@ -80,8 +91,8 @@ async function createApp() {
     })
 
     app.get('/prices', async (req, res) => {
-        const type = req.query.type as unknown as string | undefined
-        const date = req.query.date as unknown as string | undefined
+        const type = req.query.type as unknown as string
+        const date = req.query.date as unknown as string
         const age = req.query.age as unknown as number
 
         const getBasePrice = async () => (await connection.query(

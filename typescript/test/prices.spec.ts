@@ -1,67 +1,114 @@
 import {assert, expect} from 'chai';
-import request from 'supertest-as-promised';
-import {createApp, calcTicketPrice} from "../src/prices"
+import {createApp, calcTicketPrice, Holiday} from "../src/prices"
 
 describe('prices', () => {
 
     it("returns something age 5", () => {
-        const calcPrice = calcTicketPrice(5, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(5, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 0})
     })
 
     it("returns something age 6", () => {
-        const calcPrice = calcTicketPrice(6, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(6, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 7})
     })
 
     it("returns something age 5 night", () => {
-        const calcPrice = calcTicketPrice(5, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(5, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 0})
     })
 
     it("returns something age 6 night", () => {
-        const calcPrice = calcTicketPrice(6, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(6, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 14", () => {
-        const calcPrice = calcTicketPrice(14, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(14, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 7})
     })
 
     it("returns something age 14 night", () => {
-        const calcPrice = calcTicketPrice(14, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(14, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 15", () => {
-        const calcPrice = calcTicketPrice(15, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(15, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 15 night", () => {
-        const calcPrice = calcTicketPrice(15, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(15, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 64", () => {
-        const calcPrice = calcTicketPrice(64, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(64, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 64 night", () => {
-        const calcPrice = calcTicketPrice(64, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(64, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 10})
     })
 
     it("returns something age 65", () => {
-        const calcPrice = calcTicketPrice(65, "day", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(65, "day", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 8})
     })
 
     it("returns something age 65 night", () => {
-        const calcPrice = calcTicketPrice(65, "night", "", ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(65, "night", new Date('2023-09-19'), ({cost: 10}), [])
         expect(calcPrice).deep.equals({cost: 4})
+    })
+
+
+    describe("reductions when ", () => {
+      interface TestCase {
+          testCase: string,
+          date: Date,
+          type: string,
+          age: number,
+          expectedPrice: number
+      }
+
+      // a week of holidays
+      const holidays: Holiday[] = [
+          new Date('2023-09-18'),
+          new Date('2023-09-19'),
+          new Date('2023-09-20'),
+          new Date('2023-09-21'),
+          new Date('2023-09-22'),
+          new Date('2023-09-23'),
+          new Date('2023-09-24'),
+      ];
+      const basePrice = ({cost: 10})
+      const testCases: TestCase[] = [
+          {testCase: 'Holiday on Monday', date: new Date('2023-09-18'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Tuesday', date: new Date('2023-09-19'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Wednesday', date: new Date('2023-09-20'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Thursday', date: new Date('2023-09-21'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Friday', date: new Date('2023-09-22'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Saturday', date: new Date('2023-09-23'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Holiday on Monday', date: new Date('2023-09-24'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Tuesday', date: new Date('2023-10-10'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Wednesday', date: new Date('2023-10-11'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Thursday', date: new Date('2023-10-12'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Friday', date: new Date('2023-10-13'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Saturday', date: new Date('2023-10-14'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Monday', date: new Date('2023-10-15'), type: 'day', age: 35, expectedPrice: 10}
+      ];
+
+      testCases.forEach(tc => {
+          it(`${tc.testCase} and age is ${tc.age}`, () => {
+              const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+              expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+          })
+      })
+
+
     })
 
 });

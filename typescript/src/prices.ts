@@ -1,5 +1,5 @@
 import express from "express";
-import mysql from "mysql2/promise"
+import mysql, {Connection} from "mysql2/promise"
 
 interface TicketPrice {
     cost: number;
@@ -21,12 +21,12 @@ function getTicket(age: number, ticketType: string): Ticket | undefined {
     return undefined;
 }
 
-function getSomeReduction(holidays: any[], date: string | undefined) {
+function getSomeReduction(holidays: Holiday[], date: Date) {
     let reduction = 0
     let isHoliday;
     for (let holiday of holidays) {
         if (date) {
-            let d = new Date(date as string)
+            let d = new Date(date)
             if (d.getFullYear() === holiday.getFullYear()
                 && d.getMonth() === holiday.getMonth()
                 && d.getDate() === holiday.getDate()) {
@@ -37,13 +37,13 @@ function getSomeReduction(holidays: any[], date: string | undefined) {
 
     }
 
-    if (!isHoliday && new Date(date as string).getDay() === 1) {
+    if (!isHoliday && new Date(date).getDay() === 1) {
         reduction = 35
     }
     return reduction;
 }
 
-export function calcTicketPrice(age: number, type: string, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
+export function calcTicketPrice(age: number, type: string, date: Date, basePrice: TicketPrice, holidays: Holiday[]): TicketPrice {
     const ticket = getTicket(age, type);
     if (ticket !== undefined) {
         return ticket.withBasePrice(basePrice);
@@ -70,6 +70,25 @@ export function calcTicketPrice(age: number, type: string, date: string | undefi
     }
 }
 
+async function getBasePrice(connection: Connection, type: string) {
+     return await ((connection.query(
+         'SELECT cost FROM `base_price` ' +
+         'WHERE `type` = ? ',
+         [type])).then(r => r))[0][0] as unknown as TicketPrice
+}
+
+export interface Holiday {
+    getFullYear(): number,
+    getMonth(): number,
+    getDate(): number
+}
+
+async function getHolidays(connection: Connection) {
+    return ((await connection.query(
+        'SELECT * FROM `holidays`'
+    ))[0] as mysql.RowDataPacket[]).map(r => r.holiday as Holiday);
+}
+
 async function createApp() {
     const app = express()
 
@@ -89,20 +108,12 @@ async function createApp() {
 
     app.get('/prices', async (req, res) => {
         const type = req.query.type as unknown as string
-        const date = req.query.date as unknown as string
+        const date = new Date(req.query.date as unknown as string)
         const age = req.query.age as unknown as number
 
-        const getBasePrice = async () => (await connection.query(
-            'SELECT cost FROM `base_price` ' +
-            'WHERE `type` = ? ',
-            [type]))[0][0] as unknown as TicketPrice
-        const getHolidays = async () => ((await connection.query(
-            'SELECT * FROM `holidays`'
-        ))[0] as mysql.RowDataPacket[]).map(r => r.holiday)
 
-
-        const holidays = await getHolidays()
-        const basePrice = await getBasePrice()
+        const holidays = await getHolidays(connection)
+        const basePrice = await getBasePrice(connection, type);
         let calcPrice = calcTicketPrice(age, type, date, basePrice, holidays);
         res.json(calcPrice);
     })

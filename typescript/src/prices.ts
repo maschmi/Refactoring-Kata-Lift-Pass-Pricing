@@ -16,13 +16,10 @@ function getTicket(age: number, ticketType: string): Ticket | undefined {
         return {withBasePrice: () => zeroBasePrice}
     }
     if (ticketType === 'night') {
-
-            if (age > 64) {
-                return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .4)})}
-            } else {
-                return {withBasePrice: (basePrice) => basePrice}
-            }
-
+        if (age > 64) {
+            return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .4)})}
+        }
+        return {withBasePrice: (basePrice) => basePrice}
     }
     return undefined;
 }

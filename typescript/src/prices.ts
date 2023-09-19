@@ -5,21 +5,36 @@ interface TicketPrice {
     cost: number;
 }
 
+interface Ticket {
+    withBasePrice: (basePrice: TicketPrice) => TicketPrice
+}
+
 const zeroBasePrice = <TicketPrice>{cost: 0};
 
-function getTicket(age: number, ticketTyp: string): TicketPrice | undefined {
+function getTicket(age: number, ticketType: string): Ticket | undefined {
     if (age < 6) {
-        return zeroBasePrice
+        return {withBasePrice: () => zeroBasePrice}
     }
+
     return undefined;
 }
 
 export function calcTicketPrice(age: number, type: string, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
     const ticket = getTicket(age, type);
     if (ticket !== undefined) {
-        return ticket;
+        return ticket.withBasePrice(basePrice);
     }
-    if (type !== 'night') {
+    if (type === 'night') {
+        if (age >= 6) {
+            if (age > 64) {
+                return ({cost: Math.ceil(basePrice.cost * .4)})
+            } else {
+                return (basePrice)
+            }
+        } else {
+            return (zeroBasePrice)
+        }
+    } else {
         let isHoliday;
         let reduction = 0
         for (let holiday of holidays) {
@@ -55,16 +70,6 @@ export function calcTicketPrice(age: number, type: string, date: string | undefi
                     return ({cost: Math.ceil(cost)})
                 }
             }
-        }
-    } else {
-        if (age >= 6) {
-            if (age > 64) {
-                return ({cost: Math.ceil(basePrice.cost * .4)})
-            } else {
-                return (basePrice)
-            }
-        } else {
-            return (zeroBasePrice)
         }
     }
 }

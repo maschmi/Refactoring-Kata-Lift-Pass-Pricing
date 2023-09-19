@@ -1,13 +1,13 @@
 import express from "express";
 import mysql from "mysql2/promise"
 
-interface BasePrice {
+interface TicketPrice {
     cost: number;
 }
 
-const zeroBasePrice = <BasePrice>{cost: 0};
+const zeroBasePrice = <TicketPrice>{cost: 0};
 
-export function calcBasePrice(age: number, type: string | undefined, date: string | undefined, basePrice: BasePrice, holidays: any[]): BasePrice {
+export function calcTicketPrice(age: number, type: string | undefined, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
     if (age < 6) {
         return zeroBasePrice
     } else {
@@ -87,7 +87,7 @@ async function createApp() {
         const getBasePrice = async () => (await connection.query(
             'SELECT cost FROM `base_price` ' +
             'WHERE `type` = ? ',
-            [type]))[0][0] as unknown as BasePrice
+            [type]))[0][0] as unknown as TicketPrice
         const getHolidays = async () => ((await connection.query(
             'SELECT * FROM `holidays`'
         ))[0] as mysql.RowDataPacket[]).map(r => r.holiday)
@@ -95,7 +95,7 @@ async function createApp() {
 
         const holidays = await getHolidays()
         const basePrice = await getBasePrice()
-        let calcPrice = calcBasePrice(age, type, date, basePrice, holidays);
+        let calcPrice = calcTicketPrice(age, type, date, basePrice, holidays);
         res.json(calcPrice);
     })
     return {app, connection}

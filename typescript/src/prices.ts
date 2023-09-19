@@ -21,14 +21,9 @@ function getTicket(age: number, ticketType: string): Ticket | undefined {
     return undefined;
 }
 
-export function calcTicketPrice(age: number, type: string, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
-    const ticket = getTicket(age, type);
-    if (ticket !== undefined) {
-        return ticket.withBasePrice(basePrice);
-    }
-
-    let isHoliday;
+function getSomeReduction(holidays: any[], date: string | undefined) {
     let reduction = 0
+    let isHoliday;
     for (let holiday of holidays) {
         if (date) {
             let d = new Date(date as string)
@@ -45,6 +40,16 @@ export function calcTicketPrice(age: number, type: string, date: string | undefi
     if (!isHoliday && new Date(date as string).getDay() === 1) {
         reduction = 35
     }
+    return reduction;
+}
+
+export function calcTicketPrice(age: number, type: string, date: string | undefined, basePrice: TicketPrice, holidays: any[]): TicketPrice {
+    const ticket = getTicket(age, type);
+    if (ticket !== undefined) {
+        return ticket.withBasePrice(basePrice);
+    }
+
+    let reduction = getSomeReduction(holidays, date);
 
     // TODO apply reduction for others
     if (age < 15) {

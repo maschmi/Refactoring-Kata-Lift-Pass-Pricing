@@ -39,9 +39,8 @@ function verifyHoliday(holidays: Holiday[], date: Date) {
 
 function getSomeReduction(holidays: Holiday[], date: Date) {
     let reduction = 0
-    let isHoliday = verifyHoliday(holidays, date);
 
-    if (!isHoliday && new Date(date).getDay() === 1) {
+    if (new Date(date).getDay() === 1 && !verifyHoliday(holidays, date)) {
         reduction = 35
     }
     return reduction;

@@ -4,63 +4,63 @@ import {createApp, calcTicketPrice, Holiday} from "../src/prices"
 describe('prices', () => {
 
     it("returns something age 5", () => {
-        const calcPrice = calcTicketPrice(5, "day", new Date('2023-09-19'), ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(5, "day", new Date('2023-09-19'), ({cost: 100}), [])
         expect(calcPrice).deep.equals({cost: 0})
     })
 
     it("returns something age 6", () => {
-        const calcPrice = calcTicketPrice(6, "day", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 7})
+        const calcPrice = calcTicketPrice(6, "day", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 70})
     })
 
     it("returns something age 5 night", () => {
-        const calcPrice = calcTicketPrice(5, "night", new Date('2023-09-19'), ({cost: 10}), [])
+        const calcPrice = calcTicketPrice(5, "night", new Date('2023-09-19'), ({cost: 100}), [])
         expect(calcPrice).deep.equals({cost: 0})
     })
 
     it("returns something age 6 night", () => {
-        const calcPrice = calcTicketPrice(6, "night", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(6, "night", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 14", () => {
-        const calcPrice = calcTicketPrice(14, "day", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 7})
+        const calcPrice = calcTicketPrice(14, "day", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 70})
     })
 
     it("returns something age 14 night", () => {
-        const calcPrice = calcTicketPrice(14, "night", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(14, "night", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 15", () => {
-        const calcPrice = calcTicketPrice(15, "day", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(15, "day", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 15 night", () => {
-        const calcPrice = calcTicketPrice(15, "night", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(15, "night", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 64", () => {
-        const calcPrice = calcTicketPrice(64, "day", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(64, "day", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 64 night", () => {
-        const calcPrice = calcTicketPrice(64, "night", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 10})
+        const calcPrice = calcTicketPrice(64, "night", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 100})
     })
 
     it("returns something age 65", () => {
-        const calcPrice = calcTicketPrice(65, "day", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 8})
+        const calcPrice = calcTicketPrice(65, "day", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 75})
     })
 
     it("returns something age 65 night", () => {
-        const calcPrice = calcTicketPrice(65, "night", new Date('2023-09-19'), ({cost: 10}), [])
-        expect(calcPrice).deep.equals({cost: 4})
+        const calcPrice = calcTicketPrice(65, "night", new Date('2023-09-19'), ({cost: 100}), [])
+        expect(calcPrice).deep.equals({cost: 40})
     })
 
 

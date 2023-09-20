@@ -133,6 +133,24 @@ describe('prices', () => {
             })
         })
 
+        describe("age is 64 and ", () => {
+            testCaseGeneration(64, testcaseName => testcaseName === 'Normal day on Monday' ? 7 : 10 ).forEach(tc => {
+                it(`${tc.testCase} and age is ${tc.age}`, () => {
+                    const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+                    expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+                })
+            })
+        })
+
+        describe("age is 65 and ", () => {
+            testCaseGeneration(65, testcaseName => testcaseName === 'Normal day on Monday' ? 5 : 8 ).forEach(tc => {
+                it(`${tc.testCase} and age is ${tc.age}`, () => {
+                    const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+                    expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+                })
+            })
+        })
+
     })
 
 });

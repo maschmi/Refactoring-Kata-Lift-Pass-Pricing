@@ -58,19 +58,13 @@ export function calcTicketPrice(age: number, type: string, date: Date, basePrice
     let reduction = getSomeReduction(holidays, date);
 
     // TODO apply reduction for others
-
-        if (age === undefined) {
-            let cost = basePrice.cost * (1 - reduction / 100)
-            return ({cost: Math.ceil(cost)})
-        } else {
-            if (age > 64) {
-                let cost = basePrice.cost * .75 * (1 - reduction / 100)
-                return ({cost: Math.ceil(cost)})
-            } else {
-                let cost = basePrice.cost * (1 - reduction / 100)
-                return ({cost: Math.ceil(cost)})
-            }
-        }
+    if (age > 64) {
+        let cost = basePrice.cost * .75 * (1 - reduction / 100)
+        return ({cost: Math.ceil(cost)})
+    } else {
+        let cost = basePrice.cost * (1 - reduction / 100)
+        return ({cost: Math.ceil(cost)})
+    }
 }
 
 async function getBasePrice(connection: Connection, type: string) {

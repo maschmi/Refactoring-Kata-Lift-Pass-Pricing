@@ -38,12 +38,10 @@ function notAHoliday(holidays: Holiday[], date: Date) {
 }
 
 function getSomeReduction(holidays: Holiday[], date: Date) {
-    let reduction = 0
-
     if (new Date(date).getDay() === 1 && notAHoliday(holidays, date)) {
-        reduction = 35
+        return  35
     }
-    return reduction;
+    return 0;
 }
 
 export function calcTicketPrice(age: number, type: string, date: Date, basePrice: TicketPrice, holidays: Holiday[]): TicketPrice {

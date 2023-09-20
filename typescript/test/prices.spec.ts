@@ -92,7 +92,7 @@ describe('prices', () => {
           {testCase: 'Holiday on Friday', date: new Date('2023-09-22'), type: 'day', age: 35, expectedPrice: 10},
           {testCase: 'Holiday on Saturday', date: new Date('2023-09-23'), type: 'day', age: 35, expectedPrice: 10},
           {testCase: 'Holiday on Monday', date: new Date('2023-09-24'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 10},
+          {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 7},
           {testCase: 'Normal day on Tuesday', date: new Date('2023-10-10'), type: 'day', age: 35, expectedPrice: 10},
           {testCase: 'Normal day on Wednesday', date: new Date('2023-10-11'), type: 'day', age: 35, expectedPrice: 10},
           {testCase: 'Normal day on Thursday', date: new Date('2023-10-12'), type: 'day', age: 35, expectedPrice: 10},

@@ -65,49 +65,73 @@ describe('prices', () => {
 
 
     describe("reductions when ", () => {
-      interface TestCase {
-          testCase: string,
-          date: Date,
-          type: string,
-          age: number,
-          expectedPrice: number
-      }
+        interface TestCase {
+            testCase: string,
+            date: Date,
+            type: string,
+            age: number,
+            expectedPrice: number
+        }
 
-      // a week of holidays
-      const holidays: Holiday[] = [
-          new Date('2023-09-18'),
-          new Date('2023-09-19'),
-          new Date('2023-09-20'),
-          new Date('2023-09-21'),
-          new Date('2023-09-22'),
-          new Date('2023-09-23'),
-          new Date('2023-09-24'),
-      ];
-      const basePrice = ({cost: 10})
-      const testCases: TestCase[] = [
-          {testCase: 'Holiday on Monday', date: new Date('2023-09-18'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Tuesday', date: new Date('2023-09-19'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Wednesday', date: new Date('2023-09-20'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Thursday', date: new Date('2023-09-21'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Friday', date: new Date('2023-09-22'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Saturday', date: new Date('2023-09-23'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Holiday on Monday', date: new Date('2023-09-24'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 7},
-          {testCase: 'Normal day on Tuesday', date: new Date('2023-10-10'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Wednesday', date: new Date('2023-10-11'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Thursday', date: new Date('2023-10-12'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Friday', date: new Date('2023-10-13'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Saturday', date: new Date('2023-10-14'), type: 'day', age: 35, expectedPrice: 10},
-          {testCase: 'Normal day on Monday', date: new Date('2023-10-15'), type: 'day', age: 35, expectedPrice: 10}
-      ];
+        // a week of holidays
+        const holidays: Holiday[] = [
+            new Date('2023-09-18'),
+            new Date('2023-09-19'),
+            new Date('2023-09-20'),
+            new Date('2023-09-21'),
+            new Date('2023-09-22'),
+            new Date('2023-09-23'),
+            new Date('2023-09-24'),
+        ];
+        const basePrice = ({cost: 10})
 
-      testCases.forEach(tc => {
-          it(`${tc.testCase} and age is ${tc.age}`, () => {
-              const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
-              expect(calcPrice).deep.equals({cost: tc.expectedPrice})
-          })
-      })
+        const testCases: TestCase[] = [
+            {testCase: 'Holiday on Monday', date: new Date('2023-09-18'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Tuesday', date: new Date('2023-09-19'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Wednesday', date: new Date('2023-09-20'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Thursday', date: new Date('2023-09-21'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Friday', date: new Date('2023-09-22'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Saturday', date: new Date('2023-09-23'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Holiday on Sunday', date: new Date('2023-09-24'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 7},
+            {testCase: 'Normal day on Tuesday', date: new Date('2023-10-10'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Wednesday', date: new Date('2023-10-11'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Thursday', date: new Date('2023-10-12'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Friday', date: new Date('2023-10-13'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Saturday', date: new Date('2023-10-14'), type: 'day', age: 35, expectedPrice: 10},
+            {testCase: 'Normal day on Sunday', date: new Date('2023-10-15'), type: 'day', age: 35, expectedPrice: 10}
+        ];
 
+        type PriceFunction = (testCaseName: string) => number
+
+        const testCaseGeneration = (age: number, expectedPriceFunction: PriceFunction) => testCases.map(tc => ({...tc, age: age, expectedPrice: expectedPriceFunction(tc.testCase)}))
+
+        describe("age is 14 and ", () => {
+            testCaseGeneration(14, () => 7).forEach(tc => {
+                it(`${tc.testCase} and age is ${tc.age}`, () => {
+                    const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+                    expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+                })
+            })
+        })
+
+        describe("age is 15 and ", () => {
+            testCaseGeneration(15, testcaseName => testcaseName === 'Normal day on Monday' ? 7 : 10).forEach(tc => {
+                it(`${tc.testCase} and age is ${tc.age}`, () => {
+                    const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+                    expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+                })
+            })
+        })
+
+        describe("age is 35 and ", () => {
+            testCases.forEach(tc => {
+                it(`${tc.testCase} and age is ${tc.age}`, () => {
+                    const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
+                    expect(calcPrice).deep.equals({cost: tc.expectedPrice})
+                })
+            })
+        })
 
     })
 

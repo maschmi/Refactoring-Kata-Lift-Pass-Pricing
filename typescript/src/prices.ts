@@ -18,6 +18,10 @@ function getTicket(age: number, ticketType: string): Ticket | undefined {
     if (ticketType === 'night') {
         return age > 64 ? {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .4)})} : {withBasePrice: (basePrice) => basePrice};
     }
+    if (age < 15) {
+        return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .7)})}
+    }
+
     return undefined;
 }
 
@@ -54,9 +58,7 @@ export function calcTicketPrice(age: number, type: string, date: Date, basePrice
     let reduction = getSomeReduction(holidays, date);
 
     // TODO apply reduction for others
-    if (age < 15) {
-        return ({cost: Math.ceil(basePrice.cost * .7)})
-    } else {
+
         if (age === undefined) {
             let cost = basePrice.cost * (1 - reduction / 100)
             return ({cost: Math.ceil(cost)})
@@ -69,7 +71,6 @@ export function calcTicketPrice(age: number, type: string, date: Date, basePrice
                 return ({cost: Math.ceil(cost)})
             }
         }
-    }
 }
 
 async function getBasePrice(connection: Connection, type: string) {

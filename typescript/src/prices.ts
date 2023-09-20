@@ -38,7 +38,8 @@ function notAHoliday(holidays: Holiday[], date: Date) {
 }
 
 function getSomeReduction(holidays: Holiday[], date: Date) {
-    if (new Date(date).getDay() === 1 && notAHoliday(holidays, date)) {
+    const isMonday = new Date(date).getDay() === 1;
+    if (isMonday && notAHoliday(holidays, date)) {
         return  35
     }
     return 0;

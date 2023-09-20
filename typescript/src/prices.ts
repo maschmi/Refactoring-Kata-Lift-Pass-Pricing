@@ -21,7 +21,7 @@ function getTicket(age: number, ticketType: string): Ticket | undefined {
     return undefined;
 }
 
-function verifyHoliday(holidays: Holiday[], date: Date) {
+function notAHoliday(holidays: Holiday[], date: Date) {
     for (let holiday of holidays) {
         if (date) {
             let d = new Date(date)
@@ -29,18 +29,18 @@ function verifyHoliday(holidays: Holiday[], date: Date) {
                 && d.getMonth() === holiday.getMonth()
                 && d.getDate() === holiday.getDate()) {
 
-                return true;
+                return false;
             }
         }
 
     }
-    return false;
+    return true;
 }
 
 function getSomeReduction(holidays: Holiday[], date: Date) {
     let reduction = 0
 
-    if (new Date(date).getDay() === 1 && !verifyHoliday(holidays, date)) {
+    if (new Date(date).getDay() === 1 && notAHoliday(holidays, date)) {
         reduction = 35
     }
     return reduction;

@@ -49,7 +49,7 @@ function notAHoliday(holidays: Holiday[], date: Date) {
 function calculateReduction(holidays: Holiday[], date: Date) {
     const isMonday = new Date(date).getDay() === 1;
     if (isMonday && notAHoliday(holidays, date)) {
-        return  35
+        return 35
     }
     return 0;
 }
@@ -61,15 +61,17 @@ export function calcTicketPrice(age: number, type: string, date: Date, basePrice
 }
 
 async function getBasePrice(connection: Connection, type: string) {
-     return await ((connection.query(
-         'SELECT cost FROM `base_price` ' +
-         'WHERE `type` = ? ',
-         [type])).then(r => r))[0][0] as unknown as TicketPrice
+    return await ((connection.query(
+        'SELECT cost FROM `base_price` ' +
+        'WHERE `type` = ? ',
+        [type])).then(r => r))[0][0] as unknown as TicketPrice
 }
 
 export interface Holiday {
     getFullYear(): number,
+
     getMonth(): number,
+
     getDate(): number
 }
 

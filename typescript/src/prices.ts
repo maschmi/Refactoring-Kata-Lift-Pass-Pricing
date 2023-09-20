@@ -22,11 +22,11 @@ function getTicket(age: number, ticketType: string, holidays: Holiday[], date: D
         return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .7)})}
     }
     if (age > 64) {
-        const reduction = getSomeReduction(holidays, date)
+        const reduction = calculateReduction(holidays, date)
         return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .75 * (1 - reduction / 100))})}
     }
 
-    const reduction = getSomeReduction(holidays, date)
+    const reduction = calculateReduction(holidays, date)
     return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * (1 - reduction / 100))})}
 }
 
@@ -46,7 +46,7 @@ function notAHoliday(holidays: Holiday[], date: Date) {
     return true;
 }
 
-function getSomeReduction(holidays: Holiday[], date: Date) {
+function calculateReduction(holidays: Holiday[], date: Date) {
     const isMonday = new Date(date).getDay() === 1;
     if (isMonday && notAHoliday(holidays, date)) {
         return  35

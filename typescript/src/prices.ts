@@ -11,7 +11,7 @@ interface Ticket {
 
 const zeroBasePrice = <TicketPrice>{cost: 0};
 
-function getTicket(age: number, ticketType: string, holidays: Holiday[], date: Date): Ticket | undefined {
+function getTicket(age: number, ticketType: string, holidays: Holiday[], date: Date): Ticket {
     if (age < 6) {
         return {withBasePrice: () => zeroBasePrice}
     }
@@ -56,10 +56,8 @@ function getSomeReduction(holidays: Holiday[], date: Date) {
 
 export function calcTicketPrice(age: number, type: string, date: Date, basePrice: TicketPrice, holidays: Holiday[]): TicketPrice {
     const ticket = getTicket(age, type, holidays, date);
-    if (ticket !== undefined) {
-        return ticket.withBasePrice(basePrice);
-    }
-    return ({cost: -1});
+    return ticket.withBasePrice(basePrice);
+
 }
 
 async function getBasePrice(connection: Connection, type: string) {

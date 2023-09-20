@@ -26,7 +26,8 @@ function getTicket(age: number, ticketType: string, holidays: Holiday[], date: D
         return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * .75 * (1 - reduction / 100))})}
     }
 
-    return undefined;
+    const reduction = getSomeReduction(holidays, date)
+    return {withBasePrice: (basePrice) => ({cost: Math.ceil(basePrice.cost * (1 - reduction / 100))})}
 }
 
 function notAHoliday(holidays: Holiday[], date: Date) {
@@ -58,14 +59,7 @@ export function calcTicketPrice(age: number, type: string, date: Date, basePrice
     if (ticket !== undefined) {
         return ticket.withBasePrice(basePrice);
     }
-
-    let reduction = getSomeReduction(holidays, date);
-
-    // TODO apply reduction for others
-
-        let cost = basePrice.cost * (1 - reduction / 100)
-        return ({cost: Math.ceil(cost)})
-
+    return ({cost: -1});
 }
 
 async function getBasePrice(connection: Connection, type: string) {

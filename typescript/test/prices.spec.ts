@@ -93,7 +93,7 @@ describe('prices', () => {
             {testCase: 'Holiday on Friday', date: new Date('2023-09-22'), type: 'day', age: 35, expectedPrice: 100},
             {testCase: 'Holiday on Saturday', date: new Date('2023-09-23'), type: 'day', age: 35, expectedPrice: 100},
             {testCase: 'Holiday on Sunday', date: new Date('2023-09-24'), type: 'day', age: 35, expectedPrice: 100},
-            {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 70},
+            {testCase: 'Normal day on Monday', date: new Date('2023-10-09'), type: 'day', age: 35, expectedPrice: 65},
             {testCase: 'Normal day on Tuesday', date: new Date('2023-10-10'), type: 'day', age: 35, expectedPrice: 100},
             {testCase: 'Normal day on Wednesday', date: new Date('2023-10-11'), type: 'day', age: 35, expectedPrice: 100},
             {testCase: 'Normal day on Thursday', date: new Date('2023-10-12'), type: 'day', age: 35, expectedPrice: 100},
@@ -116,7 +116,7 @@ describe('prices', () => {
         })
 
         describe("age is 15 and ", () => {
-            testCaseGeneration(15, testcaseName => testcaseName === 'Normal day on Monday' ? 70 : 100).forEach(tc => {
+            testCaseGeneration(15, testcaseName => testcaseName === 'Normal day on Monday' ? 65 : 100).forEach(tc => {
                 it(`${tc.testCase} and age is ${tc.age}`, () => {
                     const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
                     expect(calcPrice).deep.equals({cost: tc.expectedPrice})
@@ -134,7 +134,7 @@ describe('prices', () => {
         })
 
         describe("age is 64 and ", () => {
-            testCaseGeneration(64, testcaseName => testcaseName === 'Normal day on Monday' ? 70 : 100).forEach(tc => {
+            testCaseGeneration(64, testcaseName => testcaseName === 'Normal day on Monday' ? 65 : 100).forEach(tc => {
                 it(`${tc.testCase} and age is ${tc.age}`, () => {
                     const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
                     expect(calcPrice).deep.equals({cost: tc.expectedPrice})
@@ -143,7 +143,7 @@ describe('prices', () => {
         })
 
         describe("age is 65 and ", () => {
-            testCaseGeneration(65, testcaseName => testcaseName === 'Normal day on Monday' ? 50 : 80 ).forEach(tc => {
+            testCaseGeneration(65, testcaseName => testcaseName === 'Normal day on Monday' ? 49 : 75 ).forEach(tc => {
                 it(`${tc.testCase} and age is ${tc.age}`, () => {
                     const calcPrice = calcTicketPrice(tc.age, tc.type, tc.date, basePrice, holidays)
                     expect(calcPrice).deep.equals({cost: tc.expectedPrice})

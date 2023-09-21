@@ -78,16 +78,6 @@ async function createApp() {
     let connectionOptions = {host: 'localhost', user: 'root', database: 'lift_pass', password: 'mysql'}
     const connection = await mysql.createConnection(connectionOptions)
 
-    app.put('/prices', async (req, res) => {
-        const liftPassCost = req.query.cost
-        const liftPassType = req.query.type
-        const [rows, fields] = await connection.query(
-            'INSERT INTO `base_price` (type, cost) VALUES (?, ?) ' +
-            'ON DUPLICATE KEY UPDATE cost = ?',
-            [liftPassType, liftPassCost, liftPassCost]);
-
-        response=()
-    })
     app.get('/prices', async (req, res) => {
         const result = await getSomeResult(connection, req)
         const holidays = await someHolidays(connection);

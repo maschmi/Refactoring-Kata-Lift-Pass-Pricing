@@ -1,11 +1,12 @@
 import express from "express";
 import mysql, {Connection} from "mysql2/promise"
+import {RowDataPacket} from "mysql2";
 
-async function getSomeResult<P, ResBody, ReqBody, ReqQuery, LocalsObj>(connection: Connection, req: Request<P, ResBody, ReqBody, ReqQuery, LocalsObj>) {
+async function getPrice<P, ResBody, ReqBody, ReqQuery, LocalsObj>(connection: Connection, type: string) {
     return (await connection.query(
         'SELECT cost FROM `base_price` ' +
         'WHERE `type` = ? ',
-        [req.query.type]))[0][0];
+        [type]))[0][0];
 }
 
 async function someHolidays(connection: Connection) {
@@ -15,10 +16,20 @@ async function someHolidays(connection: Connection) {
     return holidays;
 }
 
-function logicForRealThisTime(age: string | undefined, type, holidays: RowDataPacket[], date: string | undefined, result) {
+function getTicket(age: string | undefined, type: string, holidays: any[], basePrice: any): any {
     if (age as any < 6) {
         return ({cost: 0})
-    } else {
+    }
+    return undefined;
+}
+
+export function logicForRealThisTime(age: string | undefined, type:string, holidays: RowDataPacket[], date: string | undefined, result) {
+    const price = getTicket(age,type,holidays,result);
+    if (price !== undefined) {
+        return price;
+    }
+
+
         if (type !== 'night') {
 
             let isHoliday;
@@ -69,7 +80,6 @@ function logicForRealThisTime(age: string | undefined, type, holidays: RowDataPa
                 return ({cost: 0})
             }
         }
-    }
 }
 
 async function createApp() {
@@ -79,14 +89,15 @@ async function createApp() {
     const connection = await mysql.createConnection(connectionOptions)
 
     app.get('/prices', async (req, res) => {
-        const result = await getSomeResult(connection, req)
+        const age = req.query.age as string;
+        const type = req.query.type as string;
+        const date = req.query.date as string;
+
+        const price = await getPrice(connection, type)
         const holidays = await someHolidays(connection);
 
-        const age = req.query.age;
-        const type = req.query.type;
-        const date = req.query.date;
         let response: any;
-        response = logicForRealThisTime(age, type, holidays, date, result);
+        response = logicForRealThisTime(age, type, holidays, date, price);
         res.json(response);
     })
     return {app, connection}

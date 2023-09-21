@@ -14,4 +14,19 @@ describe('prices', () => {
         const result = logicForRealThisTime("5","day", [], undefined, {})
         expect(result).deep.eq({cost: 0})
     })
+
+    it("nightOlder5", () => {
+        const result = logicForRealThisTime("6","night", [], undefined, {cost: 100})
+        expect(result).deep.eq({cost: 100})
+    })
+
+    it("night64", () => {
+        const result = logicForRealThisTime("64","night", [], undefined, {cost: 100})
+        expect(result).deep.eq({cost: 100})
+    })
+
+    it("night65", () => {
+        const result = logicForRealThisTime("65","night", [], undefined, {cost: 100})
+        expect(result).deep.eq({cost: 40})
+    })
 });

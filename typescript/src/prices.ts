@@ -1,5 +1,19 @@
 import express from "express";
-import mysql from "mysql2/promise"
+import mysql, {Connection} from "mysql2/promise"
+
+async function getSomeResult<P, ResBody, ReqBody, ReqQuery, LocalsObj>(connection: Connection, req: Request<P, ResBody, ReqBody, ReqQuery, LocalsObj>) {
+    return (await connection.query(
+        'SELECT cost FROM `base_price` ' +
+        'WHERE `type` = ? ',
+        [req.query.type]))[0][0];
+}
+
+async function someHolidays(connection: Connection) {
+    const holidays = (await connection.query(
+        'SELECT * FROM `holidays`'
+    ))[0] as mysql.RowDataPacket[];
+    return holidays;
+}
 
 async function createApp() {
     const app = express()
@@ -18,18 +32,13 @@ async function createApp() {
         res.json()
     })
     app.get('/prices', async (req, res) => {
-        const result = (await connection.query(
-            'SELECT cost FROM `base_price` ' +
-            'WHERE `type` = ? ',
-            [req.query.type]))[0][0]
+        const result = await getSomeResult(connection, req)
+        const holidays = await someHolidays(connection);
 
         if (req.query.age as any < 6) {
             res.json({cost: 0})
         } else {
             if (req.query.type !== 'night') {
-                const holidays = (await connection.query(
-                    'SELECT * FROM `holidays`'
-                ))[0] as mysql.RowDataPacket[];
 
                 let isHoliday;
                 let reduction = 0
